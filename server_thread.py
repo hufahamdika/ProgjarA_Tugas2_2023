@@ -27,9 +27,7 @@ class ProcessTheClient(threading.Thread):
 					logging.warning(f"Sending back {data.encode('utf-8')} to {self.address}")
 					self.connection.sendall(data.encode('utf-8'))
 				else:
-					data = "Rejected\r\n"
-					logging.warning(f"Sending back {data.encode('utf-8')} to {self.address}")
-					self.connection.sendall(data.encode('utf-8'))
+					break
 			else:
 				break
 		self.connection.close()
