@@ -17,15 +17,21 @@ class ProcessTheClient(threading.Thread):
 	def run(self):
 		while True:
 			data = self.connection.recv(64)
-			data = data.decode('utf-8')
-			if re.search(r"^TIME.*\r\n$", data):
-				curr_time = datetime.datetime.now(pytz.timezone('Asia/Jakarta'))
-				curr_time = curr_time.strftime("%H:%M:%S")
-				data = f"JAM {curr_time}\r\n"
-				self.connection.sendall(data.encode('utf-8'))
+			if data:
+				logging.warning(f"Received {data} from {self.address}")
+				data = data.decode('utf-8')
+				if re.search(r"^TIME.*\r\n$", data):
+					curr_time = datetime.datetime.now(pytz.timezone('Asia/Jakarta'))
+					curr_time = curr_time.strftime("%H:%M:%S")
+					data = f"JAM {curr_time}\r\n"
+					logging.warning(f"Sending back {data.encode('utf-8')} to {self.address}")
+					self.connection.sendall(data.encode('utf-8'))
+				else:
+					data = "Rejected\r\n"
+					logging.warning(f"Sending back {data.encode('utf-8')} to {self.address}")
+					self.connection.sendall(data.encode('utf-8'))
 			else:
-				data = "REJECTED"
-				self.connection.sendall(data.encode('utf-8'))
+				break
 		self.connection.close()
 
 class Server(threading.Thread):
@@ -51,4 +57,3 @@ def main():
 
 if __name__=="__main__":
 	main()
-

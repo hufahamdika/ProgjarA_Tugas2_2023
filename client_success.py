@@ -24,8 +24,9 @@ try:
     while amount_received < amount_expected:
         data = sock.recv(64)
         amount_received += len(data)
-        logging.info(f"{data.decode('utf-8')}")
-        
+        logging.info(f"Received {data}")
+        logging.info(f"Decoded message to {data.decode('utf-8')}")
+ 
 except Exception as ee:
     logging.info(f"ERROR: {str(ee)}")
     exit(0)
